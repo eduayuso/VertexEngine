@@ -34,8 +34,7 @@ fun App() {
 
 @Composable
 private fun CubeScreen() {
-    var isRotating by remember { mutableStateOf(true) }
-    var speed by remember { mutableFloatStateOf(1f) }
+    var rotationSpeed by remember { mutableFloatStateOf(1f) }
 
     Row(Modifier.fillMaxSize()) {
         SwingPanel(
@@ -45,8 +44,7 @@ private fun CubeScreen() {
             factory = { createGlPanel() },
             update = { panel ->
                 val controller = (panel as ViewportHost).controller
-                controller.isRotating = isRotating
-                controller.speed = speed
+                controller.rotationSpeed = rotationSpeed
             }
         )
 
@@ -63,14 +61,14 @@ private fun CubeScreen() {
                 Text("Toolbar", style = MaterialTheme.typography.titleMedium)
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(onClick = { isRotating = true }) { Text("Play") }
-                    OutlinedButton(onClick = { isRotating = false }) { Text("Pause") }
+                    Button(onClick = { rotationSpeed = 1.0f }) { Text("Play") }
+                    OutlinedButton(onClick = { rotationSpeed = 0.0f }) { Text("Pause") }
                 }
 
-                Text("Speed: ${"%.2f".format(speed)}")
+                Text("Rotation Speed: ${"%.2f".format(rotationSpeed)}")
                 Slider(
-                    value = speed,
-                    onValueChange = { speed = it },
+                    value = rotationSpeed,
+                    onValueChange = { rotationSpeed = it },
                     valueRange = 0f..3f
                 )
             }

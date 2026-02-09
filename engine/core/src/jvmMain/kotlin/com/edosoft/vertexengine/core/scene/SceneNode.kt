@@ -6,8 +6,13 @@ import java.util.UUID
 class SceneNode(
     val id: String = UUID.randomUUID().toString(),
     var name: String = "Node",
-    val transform: Transform = Transform()
+    val transform: Transform = Transform(),
+    val components: MutableList<Component> = mutableListOf()
 ) {
+    init {
+        components.forEach { it.owner = this }
+    }
+
     var parent: SceneNode? = null
         private set
 
@@ -18,6 +23,21 @@ class SceneNode(
     val worldMatrix: Matrix4f = Matrix4f()
 
     var payload: Any? = null
+
+    fun addComponent(component: Component) {
+        components.add(component)
+        component.owner = this
+    }
+
+    fun removeComponent(component: Component) {
+        if (components.remove(component)) {
+            component.owner = null
+        }
+    }
+
+    fun <T : Component> getComponent(type: Class<T>): T? {
+        return components.filterIsInstance(type).firstOrNull()
+    }
 
     fun addChild(child: SceneNode) {
 
