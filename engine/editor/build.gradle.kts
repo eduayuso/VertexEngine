@@ -12,6 +12,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             listOf(
+                projects.engine.core,
                 projects.engine.render,
                 libs.compose.runtime,
                 libs.compose.foundation,

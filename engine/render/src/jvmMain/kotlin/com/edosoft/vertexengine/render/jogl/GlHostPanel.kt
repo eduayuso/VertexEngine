@@ -14,7 +14,7 @@ fun createGlPanel(): JPanel = GlHostPanel()
 
 class GlHostPanel : JPanel(BorderLayout()), ViewportHost {
 
-    private val scene = Scene().apply {
+    override val scene = Scene().apply {
         val cube = SceneNode(name = "Cube")
         cube.addComponent(MeshRenderer(PrimitiveMesh.Cube, Material(Vector4f(0.2f, 0.6f, 1.0f, 1.0f))))
         root.addChild(cube)
