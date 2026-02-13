@@ -41,26 +41,26 @@ The editor renders a cube coming from a generic `Scene` and `SceneNode`, not fro
 ### Phase 2 — Editor Minimum Usable Tooling
 
 #### Hierarchy
-- [ ] Display scene hierarchy as a tree
-- [ ] Select node from hierarchy
-- [ ] Rename node
-- [ ] Delete node
-  - Toolbar button
-  - `Delete` key
+- [x] Display scene hierarchy as a tree
+- [x] Select node from hierarchy
+- [x] Rename node
+- [x] Delete node
+  - [x] Toolbar button
+  - [ ] `Delete` key (Pending)
 - [ ] Duplicate node (`Ctrl / Cmd + D`)
-  - Deep copy (children + components)
+  - [x] Deep copy (children + components)
 
 #### Node Creation
-- [ ] Create empty node
-- [ ] Create cube primitive node
+- [x] Create empty node
+- [x] Create cube primitive node
 
 #### Inspector
-- [ ] Show selected node properties
-- [ ] Numeric editing of:
+- [x] Show selected node properties
+- [x] Numeric editing of:
   - Position (XYZ)
   - Rotation (XYZ)
   - Scale (XYZ)
-- [ ] Reset actions:
+- [ ] Reset actions (Pending):
   - Reset position
   - Reset rotation
   - Reset scale
@@ -72,26 +72,26 @@ Nodes can be created, selected, edited, duplicated, and deleted, with live feedb
 
 ### Phase 3 — Viewport Navigation & Visual Aids
 
-- [ ] Implement editor camera
-  - Orbit
-  - Zoom (mouse wheel)
-  - Pan
-- [ ] Optional ground grid
-- [ ] XYZ world axes gizmo
+- [x] Implement editor camera
+  - [x] Orbit
+  - [x] Zoom (mouse wheel)
+  - [x] Pan
+- [x] Optional ground grid
+- [x] XYZ world axes gizmo
 
-**Done when:**  
+**Done when:**
 The scene can be navigated comfortably and orientation is always clear.
 
 ---
 
 ### Phase 4 — Rendering Quality (Minimal)
 
-- [ ] Flat shading (required)
-- [ ] Lambert shading (optional)
-- [ ] Selected object highlighting
-- [ ] Wireframe mode (optional)
+- [x] Flat shading (required)
+- [x] Lambert shading (optional)
+- [x] Selected object highlighting
+- [x] Wireframe mode (optional)
 
-**Done when:**  
+**Done when:**
 Selected objects are clearly distinguishable and rendering is visually readable.
 
 ---

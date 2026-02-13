@@ -74,4 +74,18 @@ class SceneNode(
         action(this)
         for (c in _children) c.traverse(action)
     }
+
+    fun copy(): SceneNode {
+        val newNode = SceneNode(
+            name = this.name,
+            transform = this.transform.copy()
+        )
+        for (component in components) {
+            newNode.addComponent(component.copy())
+        }
+        for (child in _children) {
+            newNode.addChild(child.copy())
+        }
+        return newNode
+    }
 }

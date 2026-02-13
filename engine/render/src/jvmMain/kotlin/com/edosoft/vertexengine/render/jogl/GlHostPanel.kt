@@ -1,35 +1,41 @@
 package com.edosoft.vertexengine.render.jogl
-import com.edosoft.vertexengine.core.scene.*
+import com.edosoft.vertexengine.core.scene.Scene
+import com.edosoft.vertexengine.render.api.EditorCamera
 import com.edosoft.vertexengine.render.api.ViewportController
 import com.edosoft.vertexengine.render.api.ViewportHost
 import com.jogamp.opengl.GLCapabilities
 import com.jogamp.opengl.GLProfile
 import com.jogamp.opengl.awt.GLCanvas
 import com.jogamp.opengl.util.Animator
-import org.joml.Vector4f
 import java.awt.BorderLayout
+import java.awt.Point
+import java.awt.event.MouseAdapter
+import java.awt.event.MouseEvent
+import java.awt.event.MouseWheelEvent
 import javax.swing.JPanel
+import javax.swing.SwingUtilities
 
-fun createGlPanel(): JPanel = GlHostPanel()
+fun createGlPanel(scene: Scene): JPanel = GlHostPanel(scene)
 
-class GlHostPanel : JPanel(BorderLayout()), ViewportHost {
+class GlHostPanel(initialScene: Scene) : JPanel(BorderLayout()), ViewportHost {
 
-    override val scene = Scene().apply {
-        val cube = SceneNode(name = "Cube")
-        cube.addComponent(MeshRenderer(PrimitiveMesh.Cube, Material(Vector4f(0.2f, 0.6f, 1.0f, 1.0f))))
-        root.addChild(cube)
-    }
+    override val scene: Scene = initialScene
     
-    private val renderer = SceneRenderer(scene)
-    private var rotationAngle = 0f
+    private val editorCamera = EditorCamera()
 
     override val controller: ViewportController = object : ViewportController {
+        override val camera: EditorCamera = editorCamera
         override var rotationSpeed: Float = 1.0f
+        override var selectedNodeId: String? = null
+        override var isWireframe: Boolean = false
     }
+
+    private val renderer = SceneRenderer(scene, editorCamera, controller)
 
     private val animator: Animator
 
     init {
+
         val profile = GLProfile.get(GLProfile.GL3)
         val caps = GLCapabilities(profile).apply {
             depthBits = 24
@@ -39,21 +45,45 @@ class GlHostPanel : JPanel(BorderLayout()), ViewportHost {
         val canvas = GLCanvas(caps)
         canvas.addGLEventListener(renderer)
         
-        // Simple rotation logic for now to keep the "live" feel
-        canvas.addGLEventListener(object : com.jogamp.opengl.GLEventListener {
-            override fun init(drawable: com.jogamp.opengl.GLAutoDrawable) {}
-            override fun reshape(drawable: com.jogamp.opengl.GLAutoDrawable, x: Int, y: Int, w: Int, h: Int) {}
-            override fun display(drawable: com.jogamp.opengl.GLAutoDrawable) {
-                rotationAngle += 0.01f * controller.rotationSpeed
-                scene.root.children.firstOrNull()?.transform?.rotation?.identity()?.rotateY(rotationAngle)
-            }
-            override fun dispose(drawable: com.jogamp.opengl.GLAutoDrawable) {}
-        })
+        setupInput(canvas)
 
         add(canvas, BorderLayout.CENTER)
 
         animator = Animator(canvas)
         animator.start()
+    }
+
+    private fun setupInput(canvas: GLCanvas) {
+        val mouseAdapter = object : MouseAdapter() {
+            private var lastMousePos = Point()
+
+            override fun mousePressed(e: MouseEvent) {
+                lastMousePos = e.point
+            }
+
+            override fun mouseDragged(e: MouseEvent) {
+                val deltaX = (e.x - lastMousePos.x).toFloat()
+                val deltaY = (e.y - lastMousePos.y).toFloat()
+
+                if (SwingUtilities.isRightMouseButton(e) || SwingUtilities.isMiddleMouseButton(e)) {
+                    // Orbit
+                    editorCamera.orbit(-deltaX * controller.rotationSpeed * 0.5f, deltaY * controller.rotationSpeed * 0.5f)
+                } else if (SwingUtilities.isLeftMouseButton(e) && e.isShiftDown) {
+                    // Pan
+                    editorCamera.pan(-deltaX * 0.01f, deltaY * 0.01f)
+                }
+
+                lastMousePos = e.point
+            }
+
+            override fun mouseWheelMoved(e: MouseWheelEvent) {
+                editorCamera.zoom(e.preciseWheelRotation.toFloat() * 0.5f)
+            }
+        }
+
+        canvas.addMouseListener(mouseAdapter)
+        canvas.addMouseMotionListener(mouseAdapter)
+        canvas.addMouseWheelListener(mouseAdapter)
     }
 }
 

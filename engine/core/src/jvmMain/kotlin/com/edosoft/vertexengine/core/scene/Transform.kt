@@ -21,4 +21,12 @@ class Transform(
         rotation.identity()
         scale.set(1f, 1f, 1f)
     }
+
+    fun copy(): Transform {
+        return Transform(
+            Vector3f(position),
+            Quaternionf(rotation),
+            Vector3f(scale)
+        )
+    }
 }

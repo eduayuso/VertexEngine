@@ -14,6 +14,7 @@ kotlin {
             listOf(
                 projects.engine.core,
                 projects.engine.render,
+                libs.joml,
                 libs.compose.runtime,
                 libs.compose.foundation,
                 libs.compose.material3,

@@ -9,7 +9,7 @@ kotlin {
             listOf(
                 libs.joml
             ).forEach {
-                implementation(it)
+                api(it)
             }
         }
         commonTest.dependencies {
